@@ -1,0 +1,23 @@
+﻿@page
+@model IMDBApp.Pages.CreateNameModel
+@{
+}
+<form method="post">
+    <table>
+        <tr>
+            <td>Primary name</td>
+            <td><input type="text" asp-for="@Model.InsertName.PrimaryName" /></td>
+        </tr>
+        <tr>
+            <td>Birth year</td>
+            <td><input type="number" asp-for="@Model.InsertName.BirthYear" /></td>
+        </tr>
+        <tr>
+            <td>Dead year</td>
+            <td><input type="number" asp-for="@Model.InsertName.DeadYear" /></td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="submit" value="Create name" /></td>
+        </tr>
+    </table>
+</form>

@@ -95,15 +95,42 @@ namespace IMDBApp.SQL
                 {
                     sqlCommand.CommandType = CommandType.StoredProcedure;
                     sqlCommand.Parameters.AddWithValue("@titleTypeID", SqlDbType.Int).Value = title.TitleTypeID;
-                    sqlCommand.Parameters.AddWithValue("@primaryTitle", SqlDbType.VarChar).Value = title.PrimaryTitle;
-                    sqlCommand.Parameters.AddWithValue("@originalTitle", SqlDbType.VarChar).Value = title.OriginalTitle;
-                    sqlCommand.Parameters.AddWithValue("@isAdult", SqlDbType.Bit).Value = title.IsAdult;
-                    sqlCommand.Parameters.AddWithValue("@startYear", SqlDbType.SmallInt).Value = title.StartYear;
-                    sqlCommand.Parameters.AddWithValue("@endYear", SqlDbType.SmallInt).Value = title.EndYear;
-                    sqlCommand.Parameters.AddWithValue("@runtimeMinutes", SqlDbType.Int).Value = title.RunTimeMinutes;
+                    ParameterAdd(sqlCommand, "@primaryTitle", SqlDbType.VarChar, title.PrimaryTitle);
+                    ParameterAdd(sqlCommand, "@originalTitle", SqlDbType.VarChar, title.OriginalTitle);
+                    ParameterAdd(sqlCommand, "@isAdult", SqlDbType.Bit, title.IsAdult);
+                    ParameterAdd(sqlCommand, "@startYear", SqlDbType.SmallInt, title.StartYear);
+                    ParameterAdd(sqlCommand, "@endYear", SqlDbType.SmallInt, title.EndYear);
+                    ParameterAdd(sqlCommand, "@runtimeMinutes", SqlDbType.Int, title.RunTimeMinutes);
                     
                     sqlCommand.ExecuteNonQuery();
                 }
+            }
+        }
+        public static void InsertName(Name name)
+        {
+            using(SqlConnection con = new SqlConnection(crudConnectionString))
+            {
+                con.Open();
+                using(SqlCommand cmd = new SqlCommand("InsertName",con))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    ParameterAdd(cmd, "@primaryName", SqlDbType.VarChar,name.PrimaryName);
+                    ParameterAdd(cmd, "@birthYear", SqlDbType.SmallInt, name.BirthYear);
+                    ParameterAdd(cmd, "@deadYear", SqlDbType.SmallInt, name.DeadYear);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+        private static void ParameterAdd(SqlCommand cmd, string name, SqlDbType type, object? value)
+        {
+            if (value == null) 
+            {
+                cmd.Parameters.AddWithValue(name, type).Value = DBNull.Value;
+            }
+            else
+            {
+                cmd.Parameters.AddWithValue(name,type).Value = value;
             }
         }
     }
