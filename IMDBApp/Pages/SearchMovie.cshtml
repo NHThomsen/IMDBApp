@@ -1,0 +1,27 @@
+﻿@page
+@model IMDBApp.Pages.SearchMovieModel
+@{
+}
+<form method="post">
+    Search for:<input type="text" asp-for="@Model.searchString" />
+    <input type="submit" value="Search movie title" />
+</form>
+
+<table style="border:1px solid black">
+    @if(Model.SearchResults != null)
+    {
+        <tr>
+            <th>Tconst</th>
+            <th>Primary Title</th>
+            <th>Original Title</th>
+        </tr>
+        @foreach(var title in Model.SearchResults)
+        {
+            <tr style="border-bottom:1px solid black">
+                <td>@title.Tconst</td>
+                <td>@title.PrimaryTitle</td>
+                <td>@title.OriginalTitle</td>
+            </tr>
+        }
+    }
+</table>
