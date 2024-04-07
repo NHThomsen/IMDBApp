@@ -1,0 +1,48 @@
+﻿@page
+@model IMDBApp.Pages.CreateTitleModel
+@{
+}
+<form method="post">
+    <table>
+        <tr>
+            <td>Title type</td>
+            <td>
+                <select asp-for="@Model.CreateTitle.TitleTypeID">
+                    @foreach (var titleType in Model.TitleTypes)
+                    {
+                        <option value="@titleType.TitleTypeID">@titleType.TitleTypeName</option>
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Primary Title</td>
+            <td><input type="text" asp-for="@Model.CreateTitle.PrimaryTitle" /></td>
+        </tr>
+        <tr>
+            <td>Orignal Title</td>
+            <td><input type="text" asp-for="@Model.CreateTitle.OriginalTitle" /></td>
+        </tr>
+        <tr>
+            <td>Is adult</td>
+            <td><input type="checkbox" asp-for="@Model.CreateTitle.IsAdult" /></td>
+        </tr>
+        <tr>
+            <td>Start year</td>
+            <td><input type="number" asp-for="@Model.CreateTitle.StartYear" /></td>
+        </tr>
+        <tr>
+            <td>End year</td>
+            <td><input type="number" asp-for="@Model.CreateTitle.EndYear" /></td>
+        </tr>
+        <tr>
+            <td>Runtime minutes</td>
+            <td><input type="number" asp-for="@Model.CreateTitle.RunTimeMinutes" /></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="Create title" />
+            </td>
+        </tr>
+    </table>
+</form>
