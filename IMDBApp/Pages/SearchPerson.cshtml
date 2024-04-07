@@ -1,0 +1,25 @@
+﻿@page
+@model IMDBApp.Pages.SearchPersonModel
+@{
+}
+<form method="post">
+    Search for:<input type="text" asp-for="@Model.searchString" />
+    <input type="submit" value="Search person" />
+</form>
+
+<table style="border:1px solid black">
+    @if(Model.SearchResults != null)
+    {
+        <tr>
+            <th>Nconst:</th>
+            <th>Primary Name:</th>
+        </tr>
+        @foreach(var name in Model.SearchResults)
+        {
+            <tr>
+                <td>@name.Nconst</td>
+                <td>@name.PrimaryName</td>
+            </tr>
+        }
+    }
+</table>

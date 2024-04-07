@@ -6,7 +6,7 @@ namespace IMDBApp.SQL
 {
     public static class IMDBdal
     {
-        private static string searchConnectionString = "Persist Security Info=False;Integrated Security=true; Initial Catalog=imdbDB;Server=LAPTOP-1OS9C9II; User Id=searchUser; Password=Pa$$w0rd;";
+        private readonly static string searchConnectionString = "Persist Security Info=False;Integrated Security=true; Initial Catalog=imdbDB;Server=LAPTOP-1OS9C9II; User Id=searchUser; Password=Pa$$w0rd;";
 
         public static List<Title> SearchMovieTitle(string movieTitle)
         {
@@ -34,6 +34,32 @@ namespace IMDBApp.SQL
                 }
             }
             return titles;
+        }
+        public static List<Name> SearchPerson(string name)
+        {
+            List<Name> persons = new List<Name>();
+            using (SqlConnection conn = new SqlConnection(searchConnectionString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("SearchPerson", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@name", SqlDbType.VarChar).Value = name;
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                persons.Add(new Name(
+                                    reader.GetString(0),
+                                    reader.GetString(1)));
+                            }
+                        }
+                    }
+                }
+            }
+            return persons;
         }
     }
 }
