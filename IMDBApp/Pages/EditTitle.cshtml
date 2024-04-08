@@ -1,0 +1,37 @@
+﻿@page
+@model IMDBApp.Pages.EditTitleModel
+@{
+}
+<form method="post">
+    <table>
+        <tr>
+            <td>Primary Title</td>
+            <td><input asp-for="@Model.EditTitle.PrimaryTitle" /></td>
+        </tr>
+        <tr>
+            <td>Original Title</td>
+            <td><input asp-for="@Model.EditTitle.OriginalTitle" /></td>
+        </tr>
+        <tr>
+            <td>Is adult</td>
+            <td><input type="checkbox" asp-for="@Model.EditTitle.IsAdult" /></td>
+        </tr>
+        <tr>
+            <td>Start Year</td>
+            <td><input type="number" asp-for="@Model.EditTitle.StartYear" /></td>
+        </tr>
+        <tr>
+            <td>End Year</td>
+            <td><input type="number" asp-for="@Model.EditTitle.EndYear" /></td>
+        </tr>
+        <tr>
+            <td>Runtime Minutes</td>
+            <td><input type="text" asp-for="@Model.EditTitle.RunTimeMinutes" /></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="Update" />
+            </td>
+        </tr>
+    </table>
+</form>

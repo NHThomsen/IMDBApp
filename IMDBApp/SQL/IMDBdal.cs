@@ -1,6 +1,7 @@
 ﻿using IMDBApp.Model;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO.Pipes;
 
 namespace IMDBApp.SQL
 {
@@ -122,6 +123,76 @@ namespace IMDBApp.SQL
                 }
             }
         }
+
+        public static Title? DoesTitleExist(string tconst)
+        {
+            using(SqlConnection conn = new SqlConnection(crudConnectionString))
+            {
+                conn.Open();
+                using(SqlCommand sqlCommand = new SqlCommand("DoesTitleExist",conn))
+                {
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlCommand.Parameters.AddWithValue("@tconst", SqlDbType.VarChar).Value = tconst;
+                    using(SqlDataReader reader = sqlCommand.ExecuteReader()) 
+                    {
+                        if (reader.HasRows) 
+                        {
+                            while(reader.Read())
+                            {
+                                Title title = new Title();
+                                title.Tconst = reader.GetString(0);
+                                title.TitleTypeID = reader.GetInt32(1);
+                                title.PrimaryTitle = (string?)GetValue(reader, 2, "string");
+                                title.OriginalTitle = (string?)GetValue(reader, 3, "string");
+                                title.IsAdult = reader.GetBoolean(4);
+                                title.StartYear = (short?)GetValue(reader, 5, "smallint");
+                                title.EndYear = (short?)GetValue(reader, 6, "smallint");
+                                title.RunTimeMinutes = (int?)GetValue(reader, 7, "int");
+                                return title;
+                            }
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+        public static void UpdateTitle(Title title)
+        {
+            using(SqlConnection sqlConnection = new SqlConnection(crudConnectionString))
+            {
+                sqlConnection.Open();
+                using(SqlCommand updateTitle = new SqlCommand("UpdateTitle",sqlConnection))
+                {
+                    updateTitle.CommandType = CommandType.StoredProcedure;
+                    updateTitle.Parameters.AddWithValue("@tconst", SqlDbType.VarChar).Value = title.Tconst;
+                    ParameterAdd(updateTitle, "@primaryTitle", SqlDbType.VarChar, title.PrimaryTitle);
+                    ParameterAdd(updateTitle, "@originalTitle", SqlDbType.VarChar, title.OriginalTitle);
+                    updateTitle.Parameters.AddWithValue("@isAdult", SqlDbType.Bit).Value = title.IsAdult;
+                    ParameterAdd(updateTitle, "@startYear", SqlDbType.SmallInt, title.StartYear);
+                    ParameterAdd(updateTitle, "@endYear", SqlDbType.SmallInt, title.EndYear);
+                    ParameterAdd(updateTitle, "@runtimeMinutes", SqlDbType.Int, title.PrimaryTitle);
+
+                    updateTitle.ExecuteNonQuery();
+                }
+            }
+        }
+        public static void DeleteTitle(string tconst)
+        {
+            using(SqlConnection connection = new SqlConnection(crudConnectionString)) 
+            {
+                connection.Open();
+                using(SqlCommand deleteTitle = new SqlCommand("DeleteTitle",connection)) 
+                {
+                    deleteTitle.CommandType = CommandType.StoredProcedure;
+                    deleteTitle.Parameters.AddWithValue("@tconst", SqlDbType.VarChar).Value=tconst;
+                    deleteTitle.ExecuteNonQuery();
+                }
+            }
+        }
         private static void ParameterAdd(SqlCommand cmd, string name, SqlDbType type, object? value)
         {
             if (value == null) 
@@ -132,6 +203,31 @@ namespace IMDBApp.SQL
             {
                 cmd.Parameters.AddWithValue(name,type).Value = value;
             }
+        }
+        private static object? GetValue(SqlDataReader reader, int index, string type) 
+        {
+            if(type == "string")
+            {
+                if(!reader.IsDBNull(index))
+                {
+                    return reader.GetString(index);
+                }
+            }
+            else if(type == "int") 
+            {
+                if(!reader.IsDBNull(index))
+                {
+                    return reader.GetInt32(index);
+                }
+            }
+            else if(type == "smallint")
+            {
+                if(!reader.IsDBNull(index))
+                {
+                    return reader.GetInt16(index);
+                }
+            }
+            return null;
         }
     }
 }
